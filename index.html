@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Autorização recebida</title>
+<style>
+  :root { --bg:#f6f6f4; --fg:#1d1d1b; --muted:#6b6b66; --card:#fff; --line:#deded8; --ok:#1f7a3a; --err:#a12d2d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161615; --fg:#ececea; --muted:#a2a29c; --card:#212120; --line:#3a3a37; --ok:#5ec27f; --err:#e07a7a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:16px;
+         font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--bg); color:var(--fg); }
+  main { width:100%; max-width:520px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:28px; }
+  h1 { font-size:1.3rem; margin:0 0 8px; }
+  p { margin:8px 0; color:var(--muted); }
+  .ok { color:var(--ok); } .err { color:var(--err); }
+  code { display:block; margin:12px 0; padding:10px 12px; border:1px solid var(--line); border-radius:8px;
+         font:14px ui-monospace,Consolas,monospace; word-break:break-all; color:var(--fg); }
+  button { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:transparent; color:var(--fg); cursor:pointer; }
+</style>
+</head>
+<body>
+<main id="m">
+  <h1>Aguardando o Mercado Livre…</h1>
+  <p>Esta página só recebe a resposta da autorização do Mercado Livre.</p>
+</main>
+<script>
+  // Nada é enviado para lugar nenhum: a página só mostra o que veio no endereço.
+  var q = new URLSearchParams(location.search);
+  var code = q.get('code'), erro = q.get('error');
+  var m = document.getElementById('m');
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  if (code) {
+    m.innerHTML = '<h1 class="ok">Autorização recebida</h1>' +
+      '<p>Copie o código abaixo e cole no terminal, onde o script está pedindo:</p>' +
+      '<code id="c">' + esc(code) + '</code>' +
+      '<button id="b">Copiar código</button>' +
+      '<p>O código vale por poucos minutos e só funciona uma vez. Depois disso, pode fechar esta janela.</p>';
+    document.getElementById('b').onclick = function(){
+      navigator.clipboard.writeText(code).then(function(){ document.getElementById('b').textContent = 'Copiado'; });
+    };
+  } else if (erro) {
+    m.innerHTML = '<h1 class="err">Autorização não concluída</h1><p>O Mercado Livre respondeu: ' +
+      esc(q.get('error_description') || erro) + '</p><p>Feche esta janela e tente de novo.</p>';
+  }
+</script>
+</body>
+</html>
